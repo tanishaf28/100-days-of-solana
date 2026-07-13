@@ -1,0 +1,167 @@
+# Day 31 — Explore Advanced Token Incentive Design
+
+```text
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token create-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb --transfer-fee-basis-points 100 --transfer-fee-maximum-fee 5000
+Creating token BzJPUdX7kfiXzowvXwNMQgpqCbae5XwbDRWxp92mwAgs under program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+
+Address:  BzJPUdX7kfiXzowvXwNMQgpqCbae5XwbDRWxp92mwAgs
+Decimals:  9
+
+Signature: miyMy1A8DmdWsnhoUWUtTWocMyJUNH8nnLmGqpDZvGvtaUtD2EnPALDMtX7arsZ2azmh49BR9F78MjPeUvdBYa5
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token create-account BzJPUdX7kfiXzowvXwNMQgpqCbae5XwbDRWxp92mwAgs
+Creating account CftRHxRFNNwKS5LbTZ6L6sqVtQ57LbmfDqEuKHzmWLxs
+
+Signature: 3Xwdx4cxuQ9XgYDRm2PcVk6ZLLnywDvLw9en37Mosg1zndpDZZEWWZffonnnwmBEbGdzZuQY5TtvWN78DNpKi5rw
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token mint  BzJPUdX7kfiXzowvXwNMQgpqCbae5XwbDRWxp92mwAgs 1000
+Minting 1000 tokens
+  Token: BzJPUdX7kfiXzowvXwNMQgpqCbae5XwbDRWxp92mwAgs
+  Recipient: CftRHxRFNNwKS5LbTZ6L6sqVtQ57LbmfDqEuKHzmWLxs
+
+Signature: 4ebqfFpnfasKtL1fa79SqdR85iM2NNpQamMSZKDvXB8GHqwwGGuuzZGd1FaXJHwpM6fDqYrMwaQWaczDgLeyptH7
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token create-account BzJPUdX7kfiXzowvXwNMQgpqCbae5XwbDRWxp92mwAgs --owner 3cqdhj5w9Qjp62aeEc6bqRmkPWGWroEXrWwxuWmtbLud --fee-payer ~/.config/solana/id.json
+Creating account 4x3o6cotxU4fqrPtetdTmKgGkMK86pb4FfZm93i1TUJt
+
+Signature: 2gG82ejuCc643q3GDAxreWXy6orxnqdAWEt24PzsXzvSvEzDdH6edXvRtYkLZAQfZQBF1xUAvXi74F5PkRu7yTZ3
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token transfer BzJPUdX7kfiXzowvXwNMQgpqCbae5XwbDRWxp92mwAgs 100 4x3o6cotxU4fqrPtetdTmKgGkMK86pb4FfZm93i1TUJt --expected-fee 1
+Transfer 100 tokens
+  Sender: CftRHxRFNNwKS5LbTZ6L6sqVtQ57LbmfDqEuKHzmWLxs
+  Recipient: 4x3o6cotxU4fqrPtetdTmKgGkMK86pb4FfZm93i1TUJt
+
+Signature: 42bAHC739s24Lc3MPf2iGPbryXtG2D2SsfUvMgH8h9mU29QEDqFjAg6WeHXKeUaQsbtMuLPkkzv538sHSixBqEDx
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token balance BzJPUdX7kfiXzowvXwNMQgpqCbae5XwbDRWxp92mwAgs
+900
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token balance BzJPUdX7kfiXzowvXwNMQgpqCbae5XwbDRWxp92mwAgs --owner 4x3o6cotxU4fqrPtetdTmKgGkMK86pb4FfZm93i1TUJt
+Error: "Could not find token account 9zdv3uNEwXx8hv4gmvVcRC5mii9HmMuJ4XUTkrzpyLnJ"
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token accounts --owner 3cqdhj5w9Qjp62aeEc6bqRmkPWGWroEXrWwxuWmtbLud
+Token                                         Balance
+-----------------------------------------------------
+BzJPUdX7kfiXzowvXwNMQgpqCbae5XwbDRWxp92mwAgs  99
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token accounts BzJPUdX7kfiXzowvXwNMQgpqCbae5XwbDRWxp92mwAgs
+Balance
+-------
+900
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token withdraw-withheld-tokens \
+BzJPUdX7kfiXzowvXwNMQgpqCbae5XwbDRWxp92mwAgs \
+CftRHxRFNNwKS5LbTZ6L6sqVtQ57LbmfDqEuKHzmWLxs
+Error: "Could not deserialize token account BzJPUdX7kfiXzowvXwNMQgpqCbae5XwbDRWxp92mwAgs"
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token withdraw-withheld-tokens \
+CftRHxRFNNwKS5LbTZ6L6sqVtQ57LbmfDqEuKHzmWLxs \
+4x3o6cotxU4fqrPtetdTmKgGkMK86pb4FfZm93i1TUJt
+
+Signature: 2L8Q7pQfpcPcViCFd46yijHWXRehpmANJUWghfpeywT3HfQ2zXGyPD392PCCgpS5yJn4LveHfk66pZuJW24S8AVc
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token balance BzJPUdX7kfiXzowvXwNMQgpqCbae5XwbDRWxp92mwAgs
+901
+```
+
+## Scenario
+
+Yesterday, you built a fully branded token on Solana: a name, a symbol, metadata, a minted supply, and a transfer to another wallet. If this were a Web2 platform, you would have just launched your own internal currency. Users can hold it, send it, and see what it is. That is a solid foundation.
+
+But think about the platforms you have used or built in Web2. Almost none of them let value move around for free. Payment processors take a cut of every transaction. Marketplace platforms charge seller fees. Subscription services skim a percentage when creators get paid. These fees are not just revenue; they are how platforms sustain themselves, fund development, and align incentives.
+
+On Solana, you do not need a backend service sitting between users to collect fees on every transfer. The Token-2022 Program, using Solana’s Token Extensions, includes a transfer fee extension that enforces fee collection at the program level. When your token moves from one wallet to another, a percentage of the transfer is automatically withheld in the recipient’s token account, and only the configured withdraw withheld authority can collect it. Any valid transfer of this mint has to respect the fee configuration. Today, you are going to create a token with a built-in transfer fee, move some tokens around, and then collect the fees that were withheld.
+
+## Challenge
+### What you’ll need
+
+- Solana CLI tools installed and configured to devnet
+- A funded devnet wallet (use `solana airdrop 2` if you need SOL)
+- A second keypair file for testing transfers (you created one in a previous challenge, or generate a new one)
+- A terminal
+
+## Steps
+### Step 1: Create a token with a transfer fee.
+
+You have created tokens before, but this time you are going to add the transfer fee extension at creation time. Extensions must be configured when the mint is first created; you cannot add them later. The --program-id below points at the Token-2022 Program, which is required for any token using extensions. Run the following command to create a new token with a 1% transfer fee (100 basis points) and a maximum fee of 5,000 base units:
+
+```bash
+spl-token create-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb --transfer-fee-basis-points 100 --transfer-fee-maximum-fee 5000
+```
+
+A basis point is 1/100th of a percent, so 100 basis points equals 1%. The maximum fee caps how much can be withheld on a single transfer, regardless of the transfer amount.
+
+Note that --transfer-fee-maximum-fee 5000 is expressed in base units, not whole displayed tokens. The displayed amount depends on the mint’s decimals: with the spl-token CLI default of 9 decimals, 5,000 base units is a very small fraction of one displayed token. If you want the cap to equal 5,000 displayed tokens, you would also need to set --decimals 0 (or scale the value to match your chosen decimals).
+
+Save the mint address from the output; you will need it for the remaining steps.
+
+### Step 2: Create a token account and mint some supply.
+
+This works just like it did yesterday. Create a token account for your wallet and mint tokens into it:
+
+```bash
+spl-token create-account [MINT_ADDRESS]
+spl-token mint [MINT_ADDRESS] 1000
+```
+
+You now have 1,000 tokens in your wallet’s token account.
+
+### Step 3: Create a token account for your second wallet.
+
+You need a destination for the transfer. Create the associated token account for your second wallet’s owner address. You will sign and pay for the account creation from your main wallet:
+
+```bash
+spl-token create-account [MINT_ADDRESS] --owner [SECOND_WALLET_OWNER_ADDRESS] --fee-payer ~/.config/solana/id.json
+```
+
+[SECOND_WALLET_OWNER_ADDRESS] is the public key of your second keypair (the wallet address), not a token account address. Take note of the token account address that this command prints; you will reuse it in Step 6.
+
+### Step 4: Transfer tokens and watch the fee get withheld.
+
+When transferring tokens that have a transfer fee, you must include the --expected-fee flag. This is a safety measure: the transfer will only succeed if the fee you specify matches the fee the program calculates. For a transfer of 100 tokens at 1%, the expected fee is 1 token.
+
+Pass the second wallet’s owner address as the recipient and let the CLI resolve to the associated token account you just created:
+
+```bash
+spl-token transfer [MINT_ADDRESS] 100 [SECOND_WALLET_OWNER_ADDRESS] --expected-fee 1
+```
+
+Because the destination account already exists, you do not need --allow-unfunded-recipient here.
+
+### Step 5: Check the balances.
+
+Now look at what happened. Check the balance of both wallets:
+
+```bash
+spl-token balance [MINT_ADDRESS]
+spl-token balance [MINT_ADDRESS] --owner [SECOND_WALLET_OWNER_ADDRESS]
+```
+
+Your wallet should show 900 tokens (you sent 100). The second wallet should show 99 tokens, not 100. Where did the other token go? It was withheld. It is sitting in the second wallet’s token account, but the second wallet cannot touch it. Only the withdraw withheld authority — which, by default, is the wallet that created the mint — can collect it.
+
+### Step 6: Withdraw the withheld fees.
+
+Because your wallet is the withdraw withheld authority (it was set when you created the mint), you can sweep withheld fees out of any token account on this mint and into a destination token account that you control. First, list your own token accounts to find the one that holds your 900 tokens:
+
+```bash
+spl-token accounts [MINT_ADDRESS]
+```
+
+The withdraw-withheld-tokens subcommand takes the destination token account first, followed by one or more source token accounts to pull fees from. Use your own token account as the destination and the second wallet’s token account (from Step 3) as the source:
+
+```bash
+spl-token withdraw-withheld-tokens [YOUR_TOKEN_ACCOUNT_ADDRESS] [SECOND_WALLET_TOKEN_ACCOUNT_ADDRESS]
+```
+
+This pulls the withheld fees from the second wallet’s token account into your token account. Check your balance again to confirm:
+
+```bash
+spl-token balance [MINT_ADDRESS]
+```
+
+You should now see 901 tokens: your original 900 plus the 1 token that was withheld as a fee.
+
+## What Just Happened
+
+You just created a token where the transfer fee is enforced by the Token-2022 Program itself. The fee logic lives in the mint’s transfer fee extension, so any valid transfer of this mint goes through the same fee calculation. There is no application-level fee handler to bypass: the program rejects transfers whose --expected-fee does not match the configured fee.
+
+In Web2, charging a per-transaction fee usually means building middleware, hooking into payment flows, and handling edge cases around refunds and rounding. Here, you set the fee parameters at mint creation and the program handles withholding on every transfer. The withheld tokens accumulate in the recipient accounts that received them, and the withdraw withheld authority can sweep them out on its own schedule. Because the state is on-chain, anyone can verify what was withheld and when.
+
+This pattern shows up across a range of use cases on Solana — marketplace fees, protocol treasuries, creator-style fee flows, and operational cost recovery — and it only took a handful of CLI commands.

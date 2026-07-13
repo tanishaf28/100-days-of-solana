@@ -1,0 +1,21 @@
+# 100 Days of Solana — Week Map
+
+| Days       | Week    |
+| ---------- | ------- |
+| 1–7        | Week 1  |
+| 8–14       | Week 3  |
+| 15–21      | Week 3  |
+| 22–28      | Week 4  |
+| 29–35      | Week 5  |
+| 36–42      | Week 6  |
+| 43–49      | Week 7  |
+| 50–56      | Week 8  |
+| 57–63      | Week 8  |
+| 64–70      | Week 9  |
+| 71–77      | Week 10 |
+| 78–84      | Week 11 |
+| 85–92      | Week 12 |
+| 93–98      | Week 13 |
+| 98–100     | Week 14 |
+
+> Note: kept the week numbers exactly as originally written. Two things look like typos worth double-checking: days 8–14 and 15–21 are both labeled "Week 3" (days 8–14 look like they should be Week 2), and days 50–56 / 57–63 are both labeled "Week 8" (57–63 looks like it should be Week 9, which would also shift 64–70 onward up by one).

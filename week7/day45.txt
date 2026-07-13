@@ -1,0 +1,304 @@
+collection_mint : zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx
+MEMBER_ONE_MINT : BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV
+mint_member_2: 4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi
+account:  DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+
+The Challenge
+What you’ll need
+A terminal with the Solana CLI installed
+The spl-token CLI version 5.x or later
+Your devnet keypair from earlier days, funded with at least 0.2 SOL on devnet
+A browser pointed at Solana Explorer (devnet)
+Steps
+The plan: one collection mint with the group extension, then two member mints that reference it. Both mints get metadata, both get zero decimals, and both eventually have their mint authorities frozen so they behave like NFTs.
+
+1. Confirm devnet and balance.
+
+solana config set --url devnet
+solana balance
+If you have less than 0.2 SOL, run solana airdrop 1 first.
+
+2. Create the collection mint with the group extension. Token Extensions must all be declared at mint creation time, so we include both metadata and group in one shot.
+
+spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token \
+  --decimals 0 \
+  --enable-metadata \
+  --enable-group
+Copy the address printed as Creating token .... That is your COLLECTION_MINT.
+
+3. Stamp the collection with metadata. Replace COLLECTION_MINT with the address you just saved.
+
+spl-token initialize-metadata COLLECTION_MINT \
+  "Solana Sketchbook" \
+  "SKTCH" \
+  "https://gist.githubusercontent.com/janvinsha/b477ebe4dda46b0ef03895c4ea930a46/raw/f29222bcaff0d4979fe7ebb610a00bb97a8418ec/collection.json"
+4. Initialize the group. The second argument is the maximum collection size. Pick 3 so you have room to expand later this week.
+
+spl-token initialize-group COLLECTION_MINT 3
+5. Create the first member mint. Same idea as step 2, but with --enable-member instead of --enable-group.
+
+spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token \
+  --decimals 0 \
+  --enable-metadata \
+  --enable-member
+Save this address as MEMBER_ONE_MINT.
+
+6. Stamp the first member with its own metadata.
+
+spl-token initialize-metadata MEMBER_ONE_MINT \
+  "Sketch #1" \
+  "SK1" \
+  "https://gist.githubusercontent.com/janvinsha/3412c5d4e92b6de9a2ed82337ecafc44/raw/99359fc62ffd0480b6a52ee1ad4048ecba4ae61c/nft.json"
+7. Link the member to the collection. The first positional argument is the member mint, the second is the group mint. This is the line that wires the two together on-chain.
+
+spl-token initialize-member MEMBER_ONE_MINT COLLECTION_MINT
+8. Mint exactly one of the first NFT and lock supply.
+
+spl-token create-account MEMBER_ONE_MINT
+spl-token mint MEMBER_ONE_MINT 1
+spl-token authorize MEMBER_ONE_MINT mint --disable
+9. Repeat steps 5 through 8 for a second member NFT. Use "Sketch #2" and symbol "SK2". Save the address as MEMBER_TWO_MINT.
+
+10. View the collection on Solana Explorer. Open three tabs:
+
+https://explorer.solana.com/address/COLLECTION_MINT?cluster=devnet
+https://explorer.solana.com/address/MEMBER_ONE_MINT?cluster=devnet
+https://explorer.solana.com/address/MEMBER_TWO_MINT?cluster=devnet
+On the collection mint, scroll to the Extensions panel. You should see Group with size: 2 and max_size: 3. On each member mint, look for the Group Member extension and confirm the group address matches your collection mint.
+
+Run it
+spl-token display COLLECTION_MINT
+spl-token display MEMBER_ONE_MINT
+spl-token display MEMBER_TWO_MINT
+The display output prints every extension on each mint. On the collection you will see the group entry with the current member count. On the members you will see the group member entry with the collection address and the member number.
+
+'''
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ solana config set --url devnet
+Config File: /home/t_fonsec/.config/solana/cli/config.yml
+RPC URL: https://api.devnet.solana.com 
+WebSocket URL: wss://api.devnet.solana.com/ (computed)
+Keypair Path: /home/t_fonsec/.config/solana/id.json 
+Commitment: confirmed 
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ solana balance
+13.85298288 SOL
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token \
+  --decimals 0 \
+  --enable-metadata \
+  --enable-group
+Creating token zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx under program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+To initialize metadata inside the mint, please run `spl-token initialize-metadata zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx <YOUR_TOKEN_NAME> <YOUR_TOKEN_SYMBOL> <YOUR_TOKEN_URI>`, and sign with the mint authority.
+To initialize group configurations inside the mint, please run `spl-token initialize-group zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx <MAX_SIZE>`, and sign with the mint authority.
+
+Address:  zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx
+Decimals:  0
+
+Signature: 49k892i5dZZNBC1aYSrE7TTVnBa3F7uBeMJUFJnxGYKUGYXHdM7D8TgkBnvJLpkFfpkKK391q5DkK7TKkani9WwC
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token initialize-metadata zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx \
+  "Solana Sketchbook" \
+  "SKTCH" \
+  "https://gist.githubusercontent.com/janvinsha/b477ebe4dda46b0ef03895c4ea930a46/raw/f29222bcaff0d4979fe7ebb610a00bb97a8418ec/collection.json"
+
+Signature: 57JYWjaC9ykPa3YHhQcap6Y96E5WFwU1XLpBkWxz8xS8Kp4SNxeqxHTbjvarhU9pdTQgsUpSDmdrDewaWDwsxKxH
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token initialize-group zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx 3
+
+Signature: 3yzA1q7J3HgqjJFMDURrRMHh7bvc8LCTnBdByrY8cbY2ivy5BdFM66wFnVSf6jw627SQo9WGJcUo4vowPCQGhoUU
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token \
+  --decimals 0 \
+  --enable-metadata \
+  --enable-member
+Creating token BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV under program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+To initialize metadata inside the mint, please run `spl-token initialize-metadata BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV <YOUR_TOKEN_NAME> <YOUR_TOKEN_SYMBOL> <YOUR_TOKEN_URI>`, and sign with the mint authority.
+To initialize group member configurations inside the mint, please run `spl-token initialize-member BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV`, and sign with the mint authority and the group's update authority.
+
+Address:  BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV
+Decimals:  0
+
+Signature: cctT9CnJwxnT9xayj9F9FJ9gtJiYXNUiKdJqLBgQiL9RnxLjSjmzAbs8zDY1qLGR1rWyX7ztmkhKGeXV7XesQZn
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token initialize-metadata MEMBER_ONE_MINT \
+  "Sketch #1" \
+  "SK1" \
+  "https://gist.githubusercontent.com/janvinsha/3412c5d4e92b6de9a2ed82337ecafc44/raw/99359fc62ffd0480b6a52ee1ad4048ecba4ae61c/nft.json"
+error: Invalid value "MEMBER_ONE_MINT" for '<TOKEN_MINT_ADDRESS>': No such file or directory (os error 2)
+
+For more information try --help
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token initialize-metadata BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV \
+  "Sketch #1" \
+  "SK1" \
+  "https://gist.githubusercontent.com/janvinsha/3412c5d4e92b6de9a2ed82337ecafc44/raw/99359fc62ffd0480b6a52ee1ad4048ecba4ae61c/nft.json"
+
+Signature: 2CLJ7yBAbcDEPKj3ZcKfoTaYojq6wqCso6y8txnEB8NjDr2G1LPA3x7Vv4aNY1S7saC5JfE86GqG2zcVf37hsjRg
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token initialize-member BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx
+
+Signature: 5BHPHa2T4V3bZHtKtngFLpWYihbHxrBrJRiPxFhnkuF4V2pbegqH9ZAW2TW8c5oGtwmpM495v58PYuu2NLUhssRX
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token create-account BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV
+Creating account Bk7qoLDwCcwre2XSHZQ1vbd73RD4Gye4TRa5JXb74ejL
+
+Signature: 3FJTB4MWV7AhuPexXW9hrH7Q9rnGY51q7j8rtBNTQUQvEKQiWwzK7yJAMdTYVArHEfguYiVk2figkJn4axuFHwB7
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token mint BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV 1
+Minting 1 tokens
+  Token: BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV
+  Recipient: Bk7qoLDwCcwre2XSHZQ1vbd73RD4Gye4TRa5JXb74ejL
+BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV⠁ [0/1] Finalizing transaction YW4V6ARhQpWkt1S5gHXnc8JSLb66JuQj1QEx5oA7f9SUW8Rei7ammEqEscZZSzzraZsg1R1tihEyaD17bduh8RW                                                                         
+
+Signature: YW4V6ARhQpWkt1S5gHXnc8JSLb66JuQj1QEx5oA7f9SUW8Rei7ammEqEscZZSzzraZsg1R1tihEyaD17bduh8RW
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token authorize BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV --disable
+error: The following required arguments were not provided:
+    <AUTHORITY_TYPE>
+
+USAGE:
+    spl-token authorize --disable <TOKEN_ADDRESS> <AUTHORITY_TYPE>
+
+For more information try --help
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token authorize BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV mint  --disable
+Updating BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV
+  Current mint: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+  New mint: disabled
+
+Signature: D1zE4d71Se7wbyyYhaJkrG3QX8bk2WQqsWWe8Kn84FmUPwwhy35RiU4ar21mKBLYBCfXY6bmwBhnLhBVxDXzX4R
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token initialize-metadata DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A \
+  "Sketch #1" \
+  "SK1" \
+  "https://gist.githubusercontent.com/janvinsha/3412c5d4e92b6de9a2ed82337ecafc44/raw/99359fc62ffd0480b6a52ee1ad4048ecba4ae61c/nft.json"
+Error: Program(InvalidAccountData)
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb create-token \
+  --decimals 0 \
+  --enable-metadata \
+  --enable-member
+Creating token 4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi under program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+To initialize metadata inside the mint, please run `spl-token initialize-metadata 4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi <YOUR_TOKEN_NAME> <YOUR_TOKEN_SYMBOL> <YOUR_TOKEN_URI>`, and sign with the mint authority.
+To initialize group member configurations inside the mint, please run `spl-token initialize-member 4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi`, and sign with the mint authority and the group's update authority.
+
+Address:  4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi
+Decimals:  0
+
+Signature: 58sM5nGYg7YiaxwTjGb2UPfch7D7HprBdeVxKNqJMeEwQthdsrETDrSXfEk2vgZiwxJVZ8jPr1YMvGd5m17gTT1
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token initialize-metadata MEMBER_ONE_MINT \
+  "Sketch #1" \
+  "SK1" \
+  "https://gist.githubusercontent.com/janvinsha/3412c5d4e92b6de9a2ed82337ecafc44/raw/99359fc62ffd0480b6a52ee1ad4048ecba4ae61c/nft.json"
+error: Invalid value "MEMBER_ONE_MINT" for '<TOKEN_MINT_ADDRESS>': No such file or directory (os error 2)
+
+For more information try --help
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token initialize-metadata 4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi \
+  "Sketch #2" \
+  "SK2" \
+  "https://gist.githubusercontent.com/janvinsha/3412c5d4e92b6de9a2ed82337ecafc44/raw/99359fc62ffd0480b6a52ee1ad4048ecba4ae61c/nft.json"
+
+Signature: 3h2DFqXMDvV74DRtQcVnUTwcP9AA3Jt1jVymQs9CktntrTE18u26Ueta3v66UpNjcngw3ebXSpiF3enTDdEFgSVR
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token initialize-member 4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx
+
+Signature: 3XJPJEK779Y1Mh8qoWPPY2pJXpEpHVA5VeqD93uHJSzFR1GkHDNgY8ZFVMXoqVzE34KVJHauU8R47fGyMiDZ2ByA
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token create-account 4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi
+Creating account 33uLpyPNqbsnNewJqUycbopYijqDLzBCkVgHnfuiwgjM
+
+Signature: 4wwXmbwZAEq4YkhYnvY79RUF7pCLFSshpDSyD6xiv9QpfTo3R7MEqek4efR5Jste4FNraSoLXg22fDqinUQMaG9Q
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token mint 4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi 1
+Minting 1 tokens
+  Token: 4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi
+  Recipient: 33uLpyPNqbsnNewJqUycbopYijqDLzBCkVgHnfuiwgjM
+
+Signature: s41HThb9bKkjaNE4ks2EKgKbxTBSUbSZ1D99MD59T4GnrcMstGikgT3htJfsD3eUqRtRDkeotNjHY6WiVrnDZMq
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token authorize  4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi mint --disable
+Updating 4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi
+  Current mint: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+  New mint: disabled
+
+Signature: 44AKxrfwcP3GGJeE1jtj3tA8nMKo4k6iwns2kopSosmziVAfcmrg5k6WZ29TNAEQMM9FGm1u85rwcpBHqCcoDnL5
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token display  zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx
+
+SPL Token Mint
+  Address: zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx
+  Program: TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+  Supply: 0
+  Decimals: 0
+  Mint authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+  Freeze authority: (not set)
+Extensions
+  Metadata Pointer:
+    Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Metadata address: zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx
+  Group Pointer:
+    Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Group address: zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx
+  Metadata:
+    Update Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Mint: zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx
+    Name: Solana Sketchbook
+    Symbol: SKTCH
+    URI: https://gist.githubusercontent.com/janvinsha/b477ebe4dda46b0ef03895c4ea930a46/raw/f29222bcaff0d4979fe7ebb610a00bb97a8418ec/collection.json
+  Token Group:
+    Update Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Mint: zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx
+    Size: 2
+    Max Size: 3
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token display BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV
+
+SPL Token Mint
+  Address: BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV
+  Program: TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+  Supply: 1
+  Decimals: 0
+  Mint authority: (not set)
+  Freeze authority: (not set)
+Extensions
+  Metadata Pointer:
+    Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Metadata address: BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV
+  Group Member Pointer:
+    Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Member address: BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV
+  Metadata:
+    Update Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Mint: BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV
+    Name: Sketch #1
+    Symbol: SK1
+    URI: https://gist.githubusercontent.com/janvinsha/3412c5d4e92b6de9a2ed82337ecafc44/raw/99359fc62ffd0480b6a52ee1ad4048ecba4ae61c/nft.json
+  Token Group Member:
+    Mint: BEUZXPdd9jKuxq24LNyb9XZ1Pj9vGLQpkBakMx7khpV
+    Group: zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx
+    Member Number: 1
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token display 4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi
+
+SPL Token Mint
+  Address: 4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi
+  Program: TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+  Supply: 1
+  Decimals: 0
+  Mint authority: (not set)
+  Freeze authority: (not set)
+Extensions
+  Metadata Pointer:
+    Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Metadata address: 4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi
+  Group Member Pointer:
+    Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Member address: 4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi
+  Metadata:
+    Update Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Mint: 4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi
+    Name: Sketch #2
+    Symbol: SK2
+    URI: https://gist.githubusercontent.com/janvinsha/3412c5d4e92b6de9a2ed82337ecafc44/raw/99359fc62ffd0480b6a52ee1ad4048ecba4ae61c/nft.json
+  Token Group Member:
+    Mint: 4yioezJkFJ1GfN6MNuzz1UWe3ha3K2n3ZuHMffJjpHsi
+    Group: zP92TyP2k8vPeXhgZ2sPfdaBYVpSC6GVHEzV7ck1chx
+    Member Number: 2
+
+'''

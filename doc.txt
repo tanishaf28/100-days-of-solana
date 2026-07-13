@@ -1,0 +1,111 @@
+# Scratch Notes: Days 1, 3, 16 & 17
+
+Mixed session notes and code captured across several days; kept together here rather than split apart.
+
+---
+
+## Day 1
+
+`day 1 :PRIVATEKEY:    ASsXfo1p4kfHh6GJ6GrAn5vYAaSp52ZQBZwyLACnZbsF`
+
+```js
+import {
+  generateKeyPairSigner,
+  createSolanaRpc,
+  devnet,
+} from "@solana/kit";
+
+const rpc = createSolanaRpc(devnet("https://api.devnet.solana.com"));
+
+// Generate a new wallet
+const wallet = await generateKeyPairSigner();
+
+console.log("Wallet address:", wallet.address);
+
+console.log("\n Go to https://faucet.solana.com/");
+console.log(" Select Devnet");
+console.log(" Paste this address and request SOL\n");
+
+// Check balance
+const { value: balance } = await rpc.getBalance(wallet.address).send();
+const balanceInSol = Number(balance) / 1_000_000_000;
+
+console.log(`Balance: ${balanceInSol} SOL`);
+```
+
+---
+
+## Day 3
+
+```text
+day3
+export PATH="/home/t_fonsec/.local/share/solana/install/active_release/bin:$PATH"
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec$ solana --version
+solana: command not foundt_fonsec@openstack:/mnt/c/Users/T_fonsec$ solana-keygen new
+Generating a new keypair
+
+For added security, enter a BIP39 passphrase
+
+NOTE! This passphrase improves security of the recovery seed phrase NOT the
+keypair file itself, which is stored as insecure plain text
+
+BIP39 Passphrase (empty for none): 
+
+Wrote new keypair to /home/t_fonsec/.config/solana/id.json
+=============================================================================
+pubkey: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+=============================================================================
+Save this seed phrase and your BIP39 passphrase to recover your new keypair:
+buffalo boost firm reflect swap mother food typical axis pottery strike proof
+=============================================================================t_fonsec@openstack:/mnt/c/Users/T_fonsec$ solana config set --url devnet
+Config File: /home/t_fonsec/.config/solana/cli/config.yml
+RPC URL: https://api.devnet.solana.com 
+WebSocket URL: wss://api.devnet.solana.com/ (computed)
+Keypair Path: /home/t_fonsec/.config/solana/id.json 
+Commitment: confirmed 
+t_fonsec@openstack:/mnt/c/Users/T_fonsec$ solana address
+DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+t_fonsec@openstack:/mnt/c/Users/T_fonsec$
+```
+
+---
+
+## Day 16
+
+```text
+day 16:
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ solana-keygen new --outfile ~/recipient-keypair.json --no-bip39-passphrase
+Generating a new keypair
+Wrote new keypair to /home/t_fonsec/recipient-keypair.json
+==================================================================================
+pubkey: 4fRfMrpG2J8zX1iqiQAGfJWLs1KUoBQjC2DvRQLpm2g1
+==================================================================================
+Save this seed phrase to recover your new keypair:
+announce noodle problem swear fan book envelope obscure stock excuse steak antenna
+==================================================================================
+
+
+
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ solana transfer 4fRfMrpG2J8zX1iqiQAGfJWLs1KUoBQjC2DvRQLpm2g1  0.5 --allow-unfunded-recipient
+
+Signature: 4YxDQXLpwHbuV9qF5gfU43hRqEKHc3CSuyCWRbnkWEc2cnrB6NoBbne62j7gFKi7BXr4o8AqEYJ3FNCZrJRUoqMW
+```
+
+---
+
+## Day 17
+
+```text
+day 17:
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana/sol-transfer-tool$ solana-keygen new --outfile ~/.config/solana/recipient.json --no-bip39-passphrase
+Generating a new keypair
+Wrote new keypair to /home/t_fonsec/.config/solana/recipient.json
+=======================================================================
+pubkey: DSA7f6jWCbm63EMoQac9wQ8Gj1QmgMLWtcd8P9cu1tzi
+=======================================================================
+Save this seed phrase to recover your new keypair:
+rose mesh assist cross chunk squeeze sting trial drift whale above else
+=======================================================================
+```

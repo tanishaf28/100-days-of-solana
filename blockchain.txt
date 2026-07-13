@@ -1,0 +1,47 @@
+# SOL Transfer and Confirmation Demo
+
+Generate a temp wallet, transfer devnet SOL to it, and confirm the transaction.
+
+```text
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ solana-keygen new --no-bip39-passphrase -o /tmp/temp-wallet.json
+Generating a new keypair
+Wrote new keypair to /tmp/temp-wallet.json
+=============================================================================
+pubkey: HSEAJrMTobwNiSpwh67gLmvuthtkJXfQZ9FFhRBU291B
+=============================================================================
+Save this seed phrase to recover your new keypair:
+debris insane attack lazy middle sauce shaft dad pistol mother float broccoli
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ solana transfer --allow-unfunded-recipient $(solana address -k /tmp/temp-wallet.json) 0.001 --url devnet
+
+Signature: 2JyXVGXN94F3HqM9BEZNfmhVmi8Ndu8LU5wkArUQAw5KMCgEJ9JLwKTiYAzvevVRFpR5E1PCGQbJbmPUsjFDd2Kk
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ solana confirm -v 2JyXVGXN94F3HqM9BEZNfmhVmi8Ndu8LU5wkArUQAw5KMCgEJ9JLwKTiYAzvevVRFpR5E1PCGQbJbmPUsjFDd2Kk
+RPC URL: https://api.devnet.solana.com
+Default Signer Path: /home/t_fonsec/.config/solana/id.json
+Commitment: confirmed
+
+Transaction executed in slot 460116639:
+  Block Time: 2026-05-04T17:43:19-04:00
+  Version: legacy
+  Recent Blockhash: HRJKAgEvRgHrpv2sx1A4MCRTNv9zvxAX9PnGjtfiNMCX
+  Signature 0: 2JyXVGXN94F3HqM9BEZNfmhVmi8Ndu8LU5wkArUQAw5KMCgEJ9JLwKTiYAzvevVRFpR5E1PCGQbJbmPUsjFDd2Kk
+  Account 0: srw- DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A (fee payer)
+  Account 1: -rw- HSEAJrMTobwNiSpwh67gLmvuthtkJXfQZ9FFhRBU291B
+  Account 2: -r-x 11111111111111111111111111111111
+  Instruction 0
+    Program:   11111111111111111111111111111111 (2)
+    Account 0: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A (0)
+    Account 1: HSEAJrMTobwNiSpwh67gLmvuthtkJXfQZ9FFhRBU291B (1)
+    Transfer { lamports: 1000000 }
+  Status: Ok
+    Fee: ◎0.000005
+    Account 0 balance: ◎6 -> ◎5.998995
+    Account 1 balance: ◎0 -> ◎0.001
+    Account 2 balance: ◎0.000000001
+  Compute Units Consumed: 150
+  Log Messages:
+    Program 11111111111111111111111111111111 invoke [1]
+    Program 11111111111111111111111111111111 success
+
+Finalized
+```
