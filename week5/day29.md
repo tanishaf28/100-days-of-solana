@@ -1,0 +1,121 @@
+# Day 29: The Full Picture - Terminal Walkthrough
+
+Full terminal session creating a Token-2022 mint with a transfer fee and metadata, minting supply, transferring to a second wallet, and withdrawing withheld fees.
+
+```text
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ solana config set --url devnet
+Config File: /home/t_fonsec/.config/solana/cli/config.yml
+RPC URL: https://api.devnet.solana.com 
+WebSocket URL: wss://api.devnet.solana.com/ (computed)
+Keypair Path: /home/t_fonsec/.config/solana/id.json 
+Commitment: confirmed 
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ solana balance
+10.93897 SOL
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ solana address
+DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token create-token --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb --transfer-fee-basis-points 200 --transfer-fee-maximum-fee 5000 --enable-metadata --decimals 9
+Creating token GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8 under program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+To initialize metadata inside the mint, please run `spl-token initialize-metadata GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8 <YOUR_TOKEN_NAME> <YOUR_TOKEN_SYMBOL> <YOUR_TOKEN_URI>`, and sign with the mint authority.
+
+Address:  GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8
+Decimals:  9
+
+Signature: 4vpKzkDCLfw3qjLLbCjf7wKTVPYpJe42ajhcVEauWZMdd63NU3xGxEGsxiM1GR3ux63VXGG4AuMMMPoaEFdE3aSR
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token initialize-metadata GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8 "ReinforceCoin" "RFC" "https://raw.githubusercontent.com/solana-developers/opos-asset/main/assets/CompressedCoil/metadata.json"
+
+Signature: R9iLBhnbkqHyVwdryZ1B5c5y6aBUkNQSGSPUC9BaZbzg8hgfrq4QwfeQFqQYKmhrQ52yuTqBEovCHBy6yL1Eq4k
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token display GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8
+
+SPL Token Mint
+  Address: GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8
+  Program: TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+  Supply: 0
+  Decimals: 9
+  Mint authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+  Freeze authority: (not set)
+Extensions
+  Transfer fees:
+    Current fee: 200bps
+    Current maximum: 5000000000000
+    Config authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Withdrawal authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Withheld fees: 0
+  Metadata Pointer:
+    Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Metadata address: GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8
+  Metadata:
+    Update Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Mint: GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8
+    Name: ReinforceCoin
+    Symbol: RFC
+    URI: https://raw.githubusercontent.com/solana-developers/opos-asset/main/assets/CompressedCoil/metadata.json
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token create-account GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8
+Creating account J92FjQ9TsgMV5Wbjkubu23TyUBb1cCbrU1h7R6hNZXDN
+
+Signature: 2XAdbRZMJqwJUPT57KrZmnmaATUDBvxFynEUPUo1imEngQR1HH4mn9Y3zNyorwEDqhrqR1SaGRwcR6nDxZxi7oYd
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token mint GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8 1000
+Minting 1000 tokens
+  Token: GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8
+  Recipient: J92FjQ9TsgMV5Wbjkubu23TyUBb1cCbrU1h7R6hNZXDN
+
+Signature: 4DwB3hE3tQkSrK1cV2E1DBXuruvjKAzmBAx1w3BrwQ1dRPKTg7yfCBKagRHZNhCwosaadTPWM4rY74mQsQq9DLFA
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token balance GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8
+1000
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token create-account GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8 --owner ASsXfo1p4kfHh6GJ6GrAn5vYAaSp52ZQBZwyLACnZbsF --fee-payer ~/.config/solana/id.json
+Creating account DqUvmBypspsqsnsWddhXjRyaPVcNFJxSy8TKEyz84zqX
+
+Signature: 3C2qrqB7YCyvRD32z1gyJofp4Pbzqync4sANW1ibQq4WiPBfcLaaDXYt3AhSJCZ9Tf7XRFKu5B6LvK7tXLaoPco2
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token transfer --fund-recipient GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8 100 ASsXfo1p4kfHh6GJ6GrAn5vYAaSp52ZQBZwyLACnZbsF --expected-fee 2 --allow-unfunded-recipient
+Transfer 100 tokens
+  Sender: J92FjQ9TsgMV5Wbjkubu23TyUBb1cCbrU1h7R6hNZXDN
+  Recipient: ASsXfo1p4kfHh6GJ6GrAn5vYAaSp52ZQBZwyLACnZbsF
+  Recipient associated token account: DqUvmBypspsqsnsWddhXjRyaPVcNFJxSy8TKEyz84zqX
+
+Signature: 45sty4e1YwGZ58bUijWcrrtbqdAcY2XbEHH6d7hwVJV3bK1iW33TEC8SFisfWXGqUVzBGcmG43Dt3YSV1dTeTdL6
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token balance --owner ASsXfo1p4kfHh6GJ6GrAn5vYAaSp52ZQBZwyLACnZbsF GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8
+Error: "Account GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc not found"
+8: command not found
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token balance --owner ASsXfo1p4kfHh6GJ6GrAn5vYAaSp52ZQBZwyLACnZbsF GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8
+98
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token withdraw-withheld-tokens J92FjQ9TsgMV5Wbjkubu23TyUBb1cCbrU1h7R6hNZXDN  DqUvmBypspsqsnsWddhXjRyaPVcNFJxSy8TKEyz84zqX
+
+Signature: 5eibuJayvZV7uA2gBLjLqsP32sUqLdvaKT5KTyCzR4cvRDCBpnV18yUiq5SDW9mqFKaQeuvbKU5c6E9yB2nwPan8
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token balance GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8
+902
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token display GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8
+
+SPL Token Mint
+  Address: GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8
+  Program: TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+  Supply: 1000000000000
+  Decimals: 9
+  Mint authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+  Freeze authority: (not set)
+Extensions
+  Transfer fees:
+    Current fee: 200bps
+    Current maximum: 5000000000000
+    Config authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Withdrawal authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Withheld fees: 0
+  Metadata Pointer:
+    Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Metadata address: GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8
+  Metadata:
+    Update Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Mint: GscCeGeQhmN92SLaXAHoWee78KKb5PBkTrkMiYdy2Nc8
+    Name: ReinforceCoin
+    Symbol: RFC
+    URI: https://raw.githubusercontent.com/solana-developers/opos-asset/main/assets/CompressedCoil/metadata.json
+```

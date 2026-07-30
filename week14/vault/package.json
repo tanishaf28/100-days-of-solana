@@ -1,0 +1,22 @@
+{
+  "name": "vault",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@codama/nodes-from-anchor": "^1.5.3"
+  },
+  "dependencies": {
+    "@codama/renderers-js": "^2.3.1"
+  }
+}

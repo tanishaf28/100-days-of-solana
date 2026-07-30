@@ -1,0 +1,114 @@
+# Day 40: Permanent Delegate and Non-Transferable Credential Tokens
+
+- mint: DagC4cMmoKedHjWvKRMCmc381MjYjSr36WtiAEgDi8bE
+- recipient: H8xA9DV3hJ22cipJqq1Q1AwpHcu5KQxyTASPP16uXyp6
+
+Built a non-transferable "Solana Dev Credential" token that also has a permanent delegate, so it behaves like a soulbound credential that the issuer can still seize or claw back.
+
+## Terminal Session
+
+```text
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token create-token \
+  --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb \
+  --decimals 0 \
+  --enable-non-transferable \
+  --enable-permanent-delegate \
+  --enable-metadata
+Creating token DagC4cMmoKedHjWvKRMCmc381MjYjSr36WtiAEgDi8bE under program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+To initialize metadata inside the mint, please run `spl-token initialize-metadata DagC4cMmoKedHjWvKRMCmc381MjYjSr36WtiAEgDi8bE <YOUR_TOKEN_NAME> <YOUR_TOKEN_SYMBOL> <YOUR_TOKEN_URI>`, and sign with the mint authority.
+
+Address:  DagC4cMmoKedHjWvKRMCmc381MjYjSr36WtiAEgDi8bE
+Decimals:  0
+
+Signature: uzNKPYneUdyPBykDLH4RZ2DG4QLdbBA1bRr5E8QD5YftDD6W2DpvcG7yynGigXi8pe4JbJTZ78HCyAsWU5yZUNv
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token initialize-metadata DagC4cMmoKedHjWvKRMCmc381MjYjSr36WtiAEgDi8bE \
+  "Solana Dev Credential" \
+  "CRED" \
+  "https://example.com/credential.json"
+
+Signature: 67pRho5q7TpavSsiSYnWy7EFLGwZkHepXWUs4deuV3DzzVihKTzZ2JLzrdZXJ65c5b7U1qw5H1zJ9TAUoJ4AL597
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ solana-keygen new --outfile ~/recipient-wallet.json --no-bip39-passphrase --force
+RECIPIENT=$(solana-keygen pubkey ~/recipient-wallet.json)
+spl-token create-account DagC4cMmoKedHjWvKRMCmc381MjYjSr36WtiAEgDi8bE --owner $RECIPIENT \
+  --fee-payer ~/.config/solana/id.json \
+  --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+spl-token mint DagC4cMmoKedHjWvKRMCmc381MjYjSr36WtiAEgDi8bE 1 --recipient-owner $RECIPIENT \
+  --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+Generating a new keypair
+Wrote new keypair to /home/t_fonsec/recipient-wallet.json
+================================================================================
+pubkey: FaXS3WTwXBV3AxeiXaezQdRAPwdvAfBYt7xQYii1M7GU
+================================================================================
+Save this seed phrase to recover your new keypair:
+across neutral oppose must circle giant dance output assist voyage spell uncover
+================================================================================
+Creating account H8xA9DV3hJ22cipJqq1Q1AwpHcu5KQxyTASPP16uXyp6
+
+Signature: 5EAJDY9yysS6S8dvrMWkPoNqa33XtXSuxMfPwRpLyWrAtpn6q7QARjZRZY7pfZjV7rUgLQac3mhDW42fCAnhKDF1
+
+Minting 1 tokens
+  Token: DagC4cMmoKedHjWvKRMCmc381MjYjSr36WtiAEgDi8bE
+  Recipient: H8xA9DV3hJ22cipJqq1Q1AwpHcu5KQxyTASPP16uXyp6
+
+Signature: 55n1dbFPPeTJfkyG7SxbB3LPTg34MwhkiKQCMGGvhiXG4o7Z12jfqXZ1XhfBooCx9LXFHGS6WuBKW2d7wdkrTEd5
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ solana-keygen new --outfile ~/third-party.json --no-bip39-passphrase --force
+THIRD_PARTY=$(solana-keygen pubkey ~/third-party.json)
+spl-token transfer DagC4cMmoKedHjWvKRMCmc381MjYjSr36WtiAEgDi8bE 1 $THIRD_PARTY \
+  --owner ~/recipient-wallet.json \
+  --fee-payer ~/.config/solana/id.json \
+  --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb \
+  --fund-recipient --allow-unfunded-recipient
+Generating a new keypair
+Wrote new keypair to /home/t_fonsec/third-party.json
+============================================================================
+pubkey: 7xZqsx9atWhKr6xAZD3LtL91m1S4tDSJZkJ7VyTVpZmd
+============================================================================
+Save this seed phrase to recover your new keypair:
+merit hawk defense recipe charge please inquiry wing render demand rule belt
+============================================================================
+Transfer 1 tokens
+  Sender: H8xA9DV3hJ22cipJqq1Q1AwpHcu5KQxyTASPP16uXyp6
+  Recipient: 7xZqsx9atWhKr6xAZD3LtL91m1S4tDSJZkJ7VyTVpZmd
+  Recipient associated token account: CnYRfteR9C486uFezRxec2dtbwRDkFu8WqT8zLj5jD5f
+  Funding recipient: CnYRfteR9C486uFezRxec2dtbwRDkFu8WqT8zLj5jD5f
+Error: Client(Error { request: Some(SendTransaction), kind: RpcError(RpcResponseError { code: -32002, message: "Transaction simulation failed: Error processing Instruction 1: custom program error: 0x25", data: SendTransactionPreflightFailure(RpcSimulateTransactionResult { err: Some(UiTransactionError(InstructionError(1, Custom(37)))), logs: Some(["Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL invoke [1]", "Program log: CreateIdempotent", "Program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb invoke [2]", "Program log: Instruction: GetAccountDataSize", "Program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb consumed 1575 of 14181 compute units", "Program return: TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb rgAAAAAAAAA=", "Program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb success", "Program 11111111111111111111111111111111 invoke [2]", "Program 11111111111111111111111111111111 success", "Program log: Initialize the associated token account", "Program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb invoke [2]", "Program log: Instruction: InitializeImmutableOwner", "Program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb consumed 674 of 7784 compute units", "Program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb success", "Program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb invoke [2]", "Program log: Instruction: InitializeAccount3", "Program log: Warning: Mint has a permanent delegate, so tokens in this account may be seized at any time", "Program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb consumed 3022 of 4773 compute units", "Program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb success", "Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL consumed 21076 of 22523 compute units", "Program ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL success", "Program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb invoke [1]", "Program log: Instruction: TransferChecked", "Program log: Transfer is disabled for this mint", "Program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb consumed 1447 of 1447 compute units", "Program TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb failed: custom program error: 0x25"]), accounts: None, units_consumed: Some(22523), loaded_accounts_data_size: Some(613149), return_data: None, inner_instructions: None, replacement_blockhash: None, fee: Some(10000), pre_balances: None, post_balances: None, pre_token_balances: None, post_token_balances: None, loaded_addresses: None }) }) })
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token burn H8xA9DV3hJ22cipJqq1Q1AwpHcu5KQxyTASPP16uXyp6 1 --owner ~/.config/solana/id.json \
+  --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+Burn 1 tokens
+  Source: H8xA9DV3hJ22cipJqq1Q1AwpHcu5KQxyTASPP16uXyp6
+
+Signature: 4AAZESg6D9SkUmeXEh7KddMS5A8phYoo3mPBHmWm6VFtemJcLoZyCA7HyLqdyEZQLDvHE6YCvB8btDbtPNjdvC2t
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token balance DagC4cMmoKedHjWvKRMCmc381MjYjSr36WtiAEgDi8bE --owner $RECIPIENT \
+  --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+0
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token display DagC4cMmoKedHjWvKRMCmc381MjYjSr36WtiAEgDi8bE   --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+
+SPL Token Mint
+  Address: DagC4cMmoKedHjWvKRMCmc381MjYjSr36WtiAEgDi8bE
+  Program: TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+  Supply: 0
+  Decimals: 0
+  Mint authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+  Freeze authority: (not set)
+Extensions
+  Permanent delegate: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+  Non-transferable
+  Metadata Pointer:
+    Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Metadata address: DagC4cMmoKedHjWvKRMCmc381MjYjSr36WtiAEgDi8bE
+  Metadata:
+    Update Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Mint: DagC4cMmoKedHjWvKRMCmc381MjYjSr36WtiAEgDi8bE
+    Name: Solana Dev Credential
+    Symbol: CRED
+    URI: https://example.com/credential.json
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$
+```
+
+Trying to transfer the credential token from the recipient to a third party failed with `Transfer is disabled for this mint`, the same rejection a plain non-transferable mint produces, but the account-creation logs also carried a distinct warning: `Mint has a permanent delegate, so tokens in this account may be seized at any time`. Burning the token from the mint authority's side (using `--owner ~/.config/solana/id.json`, the permanent delegate) succeeded and dropped the recipient's balance to 0, confirming that the permanent delegate can act on the token even though the holder themselves can never transfer it away.

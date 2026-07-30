@@ -1,0 +1,24 @@
+{
+  "name": "proof-of-ship",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Tanisha Fonseca <tanisha.fonseca07@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@anchor-lang/core": "^1.1.2",
+    "@solana/web3.js": "^1.98.4",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/chai": "^5.2.3",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^26.1.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "chai": "^6.2.2",
+    "mocha": "^11.7.6",
+    "ts-mocha": "^11.1.0",
+    "ts-node": "^10.9.2"
+  }
+}

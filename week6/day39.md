@@ -1,0 +1,91 @@
+# Day 39: Review, Extension Account Sizes and Rent
+
+- interest-bearing addr: 7Vxua7cCDz7vs9HinN2n2A2zbxnogqrh3tC5nTKwRNYk
+- multiext: 8cEnXrjaAPCLMy99xNXRopmiXn7XpHPD95av3Ed1FvWK
+- frozen mint: 49js8sdgQKhLuyxG5TnmQpNAB3Abc879ZbMEPkcehtpN
+
+Went back through the week's three mints to compare account data size and rent cost side by side.
+
+## Terminal Session
+
+```text
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token display 7Vxua7cCDz7vs9HinN2n2A2zbxnogqrh3tC5nTKwRNYk  --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+
+SPL Token Mint
+  Address: 7Vxua7cCDz7vs9HinN2n2A2zbxnogqrh3tC5nTKwRNYk
+  Program: TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+  Supply: 1000000000000
+  Decimals: 9
+  Mint authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+  Freeze authority: (not set)
+Extensions
+  Interest-bearing:
+    Current rate: 15000bps
+    Average rate: 500bps
+    Rate authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token display 8cEnXrjaAPCLMy99xNXRopmiXn7XpHPD95av3Ed1FvWK --program-id TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+
+SPL Token Mint
+  Address: 8cEnXrjaAPCLMy99xNXRopmiXn7XpHPD95av3Ed1FvWK
+  Program: TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+  Supply: 100000
+  Decimals: 2
+  Mint authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+  Freeze authority: (not set)
+Extensions
+  Interest-bearing:
+    Current rate: 5bps
+    Average rate: 5bps
+    Rate authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+  Transfer fees:
+    Current fee: 100bps
+    Current maximum: 50000
+    Config authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Withdrawal authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Withheld fees: 0
+  Metadata Pointer:
+    Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Metadata address: 8cEnXrjaAPCLMy99xNXRopmiXn7XpHPD95av3Ed1FvWK
+  Metadata:
+    Update Authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+    Mint: 8cEnXrjaAPCLMy99xNXRopmiXn7XpHPD95av3Ed1FvWK
+    Name: ArcCoin
+    Symbol: ARC
+    URI: https://raw.githubusercontent.com/solana-developers/opos-asset/main/assets/CompressedCoil/metadata.json
+
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ spl-token display 49js8sdgQKhLuyxG5TnmQpNAB3Abc879ZbMEPkcehtpN --program-id Token
+zQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+
+SPL Token Mint
+  Address: 49js8sdgQKhLuyxG5TnmQpNAB3Abc879ZbMEPkcehtpN
+  Program: TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb
+  Supply: 100000000000
+  Decimals: 9
+  Mint authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+  Freeze authority: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A
+Extensions
+  Default state: Frozen
+
+  t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ solana account [MINT_ADDRESS] --output json | grep -o '"space":[ ]*[0-9]*' | grep -o '[0-9]*$'
+error: Invalid value for '<ACCOUNT_ADDRESS>': unrecognized signer source
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ solana account 7Vxua7cCDz7vs9HinN2n2A2zbxnogqrh3tC5nTKwRNYk  --output json | grep
+ -o '"space":[ ]*[0-9]*' | grep -o '[0-9]*$'
+222
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ solana account 8cEnXrjaAPCLMy99xNXRopmiXn7XpHPD95av3Ed1FvWK  --output json | grep
+ -o '"space":[ ]*[0-9]*' | grep -o '[0-9]*$'
+599
+t_fonsec@openstack:/mnt/c/Users/T_fonsec/solana$ solana account 49js8sdgQKhLuyxG5TnmQpNAB3Abc879ZbMEPkcehtpN  --output json | grep
+ -o '"space":[ ]*[0-9]*' | grep -o '[0-9]*$'
+171
+```
+
+Note: the first `solana account [MINT_ADDRESS] --output json | grep ...` attempt failed because `[MINT_ADDRESS]` was left as a literal placeholder instead of a real address; the retries with the actual mint addresses worked.
+
+## Summary
+
+| Mint Address | Extensions Enabled | Account Data Size (bytes) | Rent Cost (SOL, approx) | Key Authorities |
+| --- | --- | --- | --- | --- |
+| 7Vxua7cCDz7vs9HinN2n2A2zbxnogqrh3tC5nTKwRNYk | Interest-bearing | 222 | ~0.00155 SOL | Mint: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A; Freeze: None; Rate: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A |
+| 8cEnXrjaAPCLMy99xNXRopmiXn7XpHPD95av3Ed1FvWK | Interest-bearing, Transfer fees, Metadata pointer, Metadata | 599 | ~0.00418 SOL | Mint: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A; Freeze: None; Rate: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A; Transfer Fee Config & Withdrawal: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A |
+| 49js8sdgQKhLuyxG5TnmQpNAB3Abc879ZbMEPkcehtpN | Default state (Frozen) | 171 | ~0.00119 SOL | Mint: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A; Freeze: DEK2N9e57ceFeBvEXaf8ToCSdVN431tyPDaxy8BUUJ8A |
